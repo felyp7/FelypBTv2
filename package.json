@@ -1,0 +1,18 @@
+{
+  "dependencies": {
+    "cardinal-direction": "^1.1.1",
+    "dotenv": "^16.0.3",
+    "format-duration": "^3.0.2",
+    "got": "^11.8.6",
+    "human-date": "^1.4.0",
+    "humanize-duration": "^3.28.0",
+    "kelvin-to-celsius": "^1.1.0",
+    "moment": "^2.29.4",
+    "openai": "^3.2.1",
+    "openweather-apis": "^4.4.2",
+    "pm2": "^5.2.2",
+    "request": "^2.88.2",
+    "spotify-oauth-refresher": "^1.0.8",
+    "tmi.js": "^1.8.5"
+  }
+}
