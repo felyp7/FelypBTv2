@@ -1,104 +1,186 @@
-const tmi = require('tmi.js');
+require('dotenv').config({path: '/home/ubuntu/BOT/.env'});
+const { Configuration, OpenAIApi } = require("openai");
+const incrementCommand = require('./commands/eggroll');
+const axios = require('axios')
+const { exec } = require('child_process');
+const fs = require("fs");
+const os = require("os");
+let channelData = [];
+try {
+  const jsonData = fs.readFileSync('/home/ubuntu/BOT/channels.json', 'utf8');
+  channelData = JSON.parse(jsonData);
+} catch (err) {
+  console.error('Error reading JSON file:', err);
+}
 
-const client = new tmi.Client({    
+const path = require('path');
 
-    options: { 
-        joinInterval: 300,
-        debug: true, 
-        messagesLogLevel: "info"
+console.log(channelData);
+
+const tmi = require("tmi.js");
+
+const prefix = "'";
+
+const client = new tmi.Client({
+    options: {
+      joinInterval: 300,
+      debug: true,
+      messagesLogLevel: "info",
     },
     connection: {
-        reconnect: true,
-        secure: true
+      reconnect: true,
+      secure: true,
     },
     identity: {
-        username: "felyp8",
-        password: "oauth:1uu1ljev3kehgztlzxb2tx0rnsmkiz"
-    }, channels: ["felyp8", "lul85xd__"]
-});
-    
-const got = import('got');
-
-const runTime = new Date().toString()
-
-const humanizeDuration = require("humanize-duration");
-
-const bot = 'felypbt'
-
-const rafkList = new Set() //outside  client.on
-
-const rgnList = new Set()
-
-client.afk = new Map()
-const afk = client.afk
-
-client.brb = new Map()
-const brb = client.brb
-
-client.gn = new Map()
-const gn = client.gn
-
-client.food = new Map()
-const food = client.food
-
-client.shower = new Map()
-const shower = client.shower
-
-client.wc = new Map()
-const wc = client.wc
+      username: process.env.username,
+      password: process.env.password,
+    },
+    channels: channelData,
+  });
 
 
+const runTime = new Date().toString();
+console.log(`runTime: ${runTime}`);
+module.exports = {
+    runTime,
+    client
+}
 
+const cooldowns = new Map();
 
-client.connect(process.env.password).catch(console.error);
+module.exports = {
+    checkCooldown(user, commandName, cooldownTime) {
+        const cooldownKey = `${user}:${commandName}`; 
+        const lastCommandTime = cooldowns.get(cooldownKey);
 
-var block = false;
-
-
-    client.on("message", async (channel, user, message, self) => {
-        if(self) return;
-    const args = message.slice(1).split(' ')
-    const command = args.shift().toLowerCase();
-    const size = args[1]
-    const size2 = args[0]
-
-    let isMod = user.mod || user['user-type'] === 'mod';
-    let isBroadcaster = channel.slice(1) === user.username;
-    let isModUp = isMod || isBroadcaster;
-    let isBroadcasterUp = isBroadcaster;
-
-
-
-
-
-    if(message.toLowerCase().startsWith("'a") && user['user-id'] === "162760707") {
-      if (!block) {
-        let channelTarget = channel.replace("#", "");
-        if (args[0]) {
-            channelTarget = args[0];
+        if (lastCommandTime && (Date.now() - lastCommandTime) < cooldownTime) {
+            const remainingCooldown = (lastCommandTime + cooldownTime - Date.now()) / 1000;
+            return remainingCooldown;
         }
 
-    const got = require("got");
-
-const data = await got(`https://emotes.adamcy.pl/v1/channel/${channelTarget}/emotes/7tv.bttv.ffz.twitch`);
-let emotes = [];
-
-JSON.parse(data.body).map((e) => {
-  emotes.push(e.code);
-});
-
-client.say(channel, `${emotes.join(" ")}`)
-        block = true;
-        setTimeout(() => {
-            block = false;
-        }, (5 * 1000));
+        cooldowns.set(cooldownKey, Date.now());
+        return null;
     }
-}
+};
 
 
-if (message.toLowerCase().startsWith("lol")) {
-    client.say(channel, "lol");
+const commandFiles = fs.readdirSync(path.join(__dirname, 'commands'))
+    .filter(file => file.endsWith('.js'));
+
+const commands = new Map();
+
+for (const file of commandFiles) {
+    const command = require(`./commands/${file}`);
+    commands.set(command.name, command);
 }
+
+client.connect();
+
+client.on('message', async (channel, userstate, message, self) => {
+    if (self) return;
+
+
+
+
+    if (channel == "#pajlada") {
+        if (
+          message == "ApuApustaja 👉 🚨 ALERTA" &&
+          userstate["user-id"] == "683214289"
+        ) {
+          client.action(channel, "PAJAS 🚨 POPLACH");
+        }
+      }
+
+
+      if (channel === "#felyp8") {
+        if (message === "test") {
+          fs.readFile(
+            "/home/ubuntu/BOT/counter.txt",
+            "utf8",
+            function (err, data) {
+              if (err) {
+                console.log("Error reading file:", err);
+              } else {
+                console.log("Current count:", parseInt(data));
+                let count = data;
+  
+                client.action(
+                  channel,
+                  `Test number ${count} successful LaterGator `
+                );
+  
+                count++;
+                fs.writeFile(
+                  "/home/ubuntu/BOT/counter.txt",
+                  count,
+                  function (err) {
+                    if (err) {
+                      console.log("Error writing file:", err);
+                    } else {
+                      console.log("Count updated to:", count);
+                    }
+                  }
+                );
+              }
+            }
+          );
+        }
+      }
+
+    if (!message.startsWith(prefix)) return;
+
+
+async function isStreamLive(channel) {
+    try {
+      const response = await axios.get(`https://api.twitch.tv/helix/streams?user_login=${channel}`, {
+        headers: {
+          'Client-ID': process.env.NEW_client_id, 
+          'Authorization': `Bearer ${process.env.NEW_access_token}` 
+        }
+      });
+  
+      return response.data.data.length > 0;
+    } catch (error) {
+      console.error('Error checking stream status:', error);
+      return false;
+    }
+  }
+  const isChannelLive = await isStreamLive('minusinsanity');
+  if (channel === "#minusinsanity" && isChannelLive) {
+    console.log("Couldn't send a message (Channel is live)")
+    ;return;
+  }
+
+
+
+
+    let isMod = userstate.mod || userstate["user-type"] === "mod";
+    let isBroadcaster = channel.slice(1) === userstate.username;
+    let isModUp = isMod || isBroadcaster;
+  module.exports = {
+       isBroadcaster,
+       isModUp
+  }
+
+    const args = message
+    .replace("\u{E0000}", "")
+    .trim()
+    .slice(1)
+    .split(" ")
+    .filter((element) => element);
+    const commandName = args.shift().toLowerCase();
+
+
+    if (!commands.has(commandName)) return;
+
+    const command = commands.get(commandName);
+
+    try {
+        command.execute(client, channel, userstate, args, message);
+    } catch (error) {
+        console.error(error);
+        client.say(channel, 'An error occurred while executing the command.');
+    }
 
 
 });
