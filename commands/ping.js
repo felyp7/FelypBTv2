@@ -1,5 +1,4 @@
-const { runTime, client } = require('/home/ubuntu/BOT/BOTv2.js')
-const { checkCooldown } = require('/home/ubuntu/BOT/BOTv2.js');
+const  checkCooldown  = require('/home/ubuntu/BOT/BOTv2.js');
 const humanizeDuration = require("humanize-duration");
 const got = require("got");
 

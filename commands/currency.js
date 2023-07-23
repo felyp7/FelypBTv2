@@ -1,16 +1,19 @@
-const { checkCooldown } = require('/home/ubuntu/BOT/BOTv2.js');
-const { client } = require('/home/ubuntu/BOT/BOTv2.js')
+const  checkCooldown  = require('/home/ubuntu/BOT/BOTv2.js');
+const  client  = require('/home/ubuntu/BOT/BOTv2.js')
 const got = require("got");
 const fs = require("fs");
 
 const cooldowns = {};
 
 module.exports = {
-    name: 'dadjoke',
+    name: 'currency',
     description: 'xD',
     cooldown: 5,
     async execute(client, channel, user, args) {
-        const remainingCooldown = checkCooldown(user, this.name, this.cooldown * 1000);
+      const remainingCooldown = checkCooldown(user, this.name, this.cooldown * 1000);
+      if (remainingCooldown !== null) {
+          return;
+      }
         const request = require("request");
       if (args[0] == null) {
         client.action(channel, "Enter a currency...");

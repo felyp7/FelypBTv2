@@ -5,7 +5,7 @@ const fs = require("fs");
 const cooldowns = {};
 
 module.exports = {
-    name: 'lesbiantest',
+    name: 'swag',
     description: 'xD',
     cooldown: 5,
     async execute(client, channel, user, args) {
@@ -14,9 +14,9 @@ module.exports = {
           return;
       }        client.action(
             channel,
-            `@${user.username} ${args.join(" ")} is  ${
-              Math.floor(Math.random() * 100) + 1
-            }% lesbian Okayge`
+            `@${user.username} ${args.join(" ")} has ${
+              Math.floor(Math.random() * 30) + 1
+            }% swag B)`
           );
     }
 }

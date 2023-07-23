@@ -1,5 +1,4 @@
-const { checkCooldown } = require('/home/ubuntu/BOT/BOTv2.js');
-const { client } = require('/home/ubuntu/BOT/BOTv2.js')
+const  checkCooldown  = require('/home/ubuntu/BOT/BOTv2.js');
 const got = require("got");
 const fs = require("fs");
 
@@ -10,8 +9,10 @@ module.exports = {
     description: 'xD',
     cooldown: 5,
     async execute(client, channel, user, args) {
-        const remainingCooldown = checkCooldown(user, this.name, this.cooldown * 1000);
-        const weather = require("openweather-apis");
+      const remainingCooldown = checkCooldown(user, this.name, this.cooldown * 1000);
+      if (remainingCooldown !== null) {
+          return;
+      }        const weather = require("openweather-apis");
       const Compass = require("cardinal-direction");
       const hdate = require("human-date");
       const moment = require("moment");
@@ -110,7 +111,7 @@ module.exports = {
             JSONObj.main.feels_like
           )}°C. Weather: ${
             JSONObj.weather[0].description
-          }. ${direction} Wind speed: ${JSONObj.wind.speed} m/s. Humadity: ${
+          }. ${direction} Wind speed: ${JSONObj.wind.speed} m/s. Humidity: ${
             JSONObj.main.humidity
           }%. Air pressure: ${
             JSONObj.main.pressure
@@ -129,7 +130,7 @@ module.exports = {
           JSONObj.weather[0].description
         }. ${direction} Wind speed: ${
           JSONObj.wind.speed
-        } m/s. Wind gusts up to ${JSONObj.wind.gust} m/s. Humadity: ${
+        } m/s. Wind gusts up to ${JSONObj.wind.gust} m/s. Humidity: ${
           JSONObj.main.humidity
         }%. Air pressure: ${
           JSONObj.main.pressure

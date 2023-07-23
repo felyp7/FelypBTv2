@@ -1,4 +1,4 @@
-const { checkCooldown } = require('/home/ubuntu/BOT/BOTv2.js');
+const  checkCooldown  = require('/home/ubuntu/BOT/BOTv2.js');
 const got = require("got");
 const fs = require("fs");
 
@@ -10,6 +10,9 @@ module.exports = {
     cooldown: 5,
     async execute(client, channel, user, args) {
         const remainingCooldown = checkCooldown(user, this.name, this.cooldown * 1000);
-        client.action(channel, `FeelsDankMan 👉 https://felyp.ga/botcommands`);
+        if (remainingCooldown !== null) {
+            return;
+        }
+        client.action(channel, `FeelsDankMan 👉 https://felyp.ga/botcommands (https://github.com/felyp7/FelypBTv2)`);
     }
 }

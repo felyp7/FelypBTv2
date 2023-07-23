@@ -1,5 +1,4 @@
 const fs = require("fs");
-const { client, checkCooldown} = require('/home/ubuntu/BOT/BOTv2.js');
 
 const cooldowns = {};
 

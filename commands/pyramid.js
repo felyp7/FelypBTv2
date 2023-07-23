@@ -1,6 +1,6 @@
-const { checkCooldown } = require('/home/ubuntu/BOT/BOTv2.js');
-const { isModUp } = require('/home/ubuntu/BOT/BOTv2.js');
-const { client } = require('/home/ubuntu/BOT/BOTv2.js')
+const  checkCooldown  = require('/home/ubuntu/BOT/BOTv2.js');
+const  isModUp  = require('/home/ubuntu/BOT/BOTv2.js');
+const  client  = require('/home/ubuntu/BOT/BOTv2.js')
 const got = require("got");
 const fs = require("fs");
 
@@ -11,8 +11,10 @@ module.exports = {
     description: 'xD',
     cooldown: 5,
     async execute(client, channel, user, args) {
-        const remainingCooldown = checkCooldown(user, this.name, this.cooldown * 1000);
-        if(isModUp || user["user-id"] === "162760707") {
+      const remainingCooldown = checkCooldown(user, this.name, this.cooldown * 1000);
+      if (remainingCooldown !== null) {
+          return;
+      }        if(isModUp || user["user-id"] === "162760707") {
             if (!args[1] || isNaN(parseInt(args[0]))) {
                 return client.say(channel, `Usage: 'pyramid 1-100 message`);
               }

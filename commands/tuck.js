@@ -1,6 +1,6 @@
-const { checkCooldown } = require('/home/ubuntu/BOT/BOTv2.js');
-const { client } = require('/home/ubuntu/BOT/BOTv2.js')
-const { isModUp } = require('/home/ubuntu/BOT/BOTv2.js');
+const  checkCooldown  = require('/home/ubuntu/BOT/BOTv2.js');
+const  client = require('/home/ubuntu/BOT/BOTv2.js')
+const  isModUp  = require('/home/ubuntu/BOT/BOTv2.js');
 const got = require("got");
 const fs = require("fs");
 
@@ -11,8 +11,10 @@ module.exports = {
     description: 'xD',
     cooldown: 5,
     async execute(client, channel, user, args) {
-        const remainingCooldown = checkCooldown(user, this.name, this.cooldown * 1000);
-        let channelTarget = channel.replace("#", "");
+      const remainingCooldown = checkCooldown(user, this.name, this.cooldown * 1000);
+      if (remainingCooldown !== null) {
+          return;
+      }        let channelTarget = channel.replace("#", "");
 
     const got = require("got");
 

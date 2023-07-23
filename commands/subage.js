@@ -1,5 +1,4 @@
-const { checkCooldown } = require('/home/ubuntu/BOT/BOTv2.js');
-const { client } = require('/home/ubuntu/BOT/BOTv2.js')
+const  checkCooldown  = require('/home/ubuntu/BOT/BOTv2.js');
 const got = require("got");
 const fs = require("fs");
 
@@ -10,8 +9,10 @@ module.exports = {
     description: 'xD',
     cooldown: 5,
     async execute(client, channel, user, args) {
-        const remainingCooldown = checkCooldown(user, this.name, this.cooldown * 1000);
-        let userTarget = user.username;
+      const remainingCooldown = checkCooldown(user, this.name, this.cooldown * 1000);
+      if (remainingCooldown !== null) {
+          return;
+      }        let userTarget = user.username;
       if (args[0]) {
         if (args[0].startsWith("@")) {
           args[0] = args[0].substring(1);
@@ -25,7 +26,7 @@ module.exports = {
       }
 
       const bCheck = await got(
-        `https://api.ivr.fi/twitch/resolve/${userTarget}`,
+        `https://api.ivr.fi/v2/twitch/user?login=${userTarget}`,
         {
           responseType: "json",
           throwHttpErrors: false,
@@ -33,15 +34,15 @@ module.exports = {
       );
 
       const cCheck = await got(
-        `https://api.ivr.fi/twitch/resolve/${channelTarget}`,
+        `https://api.ivr.fi/v2/twitch/user?login=${channelTarget}`,
         {
           responseType: "json",
           throwHttpErrors: false,
         }
       );
 
-      let channelCheck = cCheck.body;
-      let banCheck = bCheck.body;
+      let channelCheck = cCheck.body[0];
+      let banCheck = bCheck.body[0];
 
       const channelid = channelCheck.id;
       const ban = banCheck.banned;
@@ -57,21 +58,26 @@ module.exports = {
       }
 
       const subage = await got(
-        `https://api.ivr.fi/twitch/subage/${userTarget}/${channelTarget}`
+        `https://api.ivr.fi/v2/twitch/subage/${userTarget}/${channelTarget}`
       );
       let data = JSON.parse(subage.body);
 
       console.log(data);
 
-      const tier = data.meta.tier;
-      const type = data.meta.type;
-      const months = data.cumulative.months;
-      const anniversary = data.cumulative.remaining;
-      const endsin = data.streak.remaining;
-      const streak = data.streak.months;
+
+      if (data.meta != null && data.streak != null) {
+        var tier = data.meta.tier || null;
+        var type = data.meta.type || null;
+        var endsin = data.streak.daysRemaining || null;
+        var streak = data.streak.months || null;
+      }
+
+      var months = data.cumulative.months;
+      var anniversary = data.cumulative.daysRemaining;
+      
 
       const userCheck = await got(
-        `https://api.ivr.fi/twitch/resolve/${userTarget}`,
+        `https://api.ivr.fi/v2/twitch/user?login=${userTarget}`,
         {
           responseType: "json",
           throwHttpErrors: false,
@@ -91,7 +97,7 @@ module.exports = {
         return;
       }
 
-      if (data.subscribed == false) {
+      if (data.meta == null && data.streak == null) {
         client.action(
           channel,
           `${userTarget} isn't subscribed to ${channelTarget}, but used to be subscribed for ${months} months.`

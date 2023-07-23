@@ -1,5 +1,5 @@
-const { checkCooldown } = require('/home/ubuntu/BOT/BOTv2.js');
-const { client } = require('/home/ubuntu/BOT/BOTv2.js')
+const  checkCooldown  = require('/home/ubuntu/BOT/BOTv2.js');
+const  client  = require('/home/ubuntu/BOT/BOTv2.js')
 const got = require("got");
 const fs = require("fs");
 
@@ -10,7 +10,10 @@ module.exports = {
     description: 'xD',
     cooldown: 5,
     async execute(client, channel, user, args) {
-        const remainingCooldown = checkCooldown(user, this.name, this.cooldown * 1000);
+      const remainingCooldown = checkCooldown(user, this.name, this.cooldown * 1000);
+      if (remainingCooldown !== null) {
+          return;
+      }
         let username = user.username;
 
         if (args[0]) {
@@ -21,20 +24,24 @@ module.exports = {
         }
   
         const userCheck = await got(
-          `https://api.ivr.fi/v2/twitch/user/${username}`,
+          `https://api.ivr.fi/v2/twitch/user?login=${username}`,
           {
             responseType: "json",
             throwHttpErrors: false,
           }
         );
-        if (!userCheck.body.id) {
+
+
+
+        if (!userCheck.body[0].id) {
           client.action(channel, `This user does not exist.`);
           return;
         }
   
-        const userData = userCheck.body;
+        const userData = userCheck.body[0];
         const userColor = userData.chatColor;
-  
+
+
         if (userColor === null) {
           client.action(channel, "Default. (never set)");
           return;

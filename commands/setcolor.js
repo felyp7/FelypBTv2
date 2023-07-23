@@ -1,5 +1,4 @@
-const { checkCooldown } = require('/home/ubuntu/BOT/BOTv2.js');
-const { client } = require('/home/ubuntu/BOT/BOTv2.js')
+const  checkCooldown  = require('/home/ubuntu/BOT/BOTv2.js');
 const got = require("got");
 const fs = require("fs");
 
@@ -10,8 +9,10 @@ module.exports = {
     description: 'xD',
     cooldown: 5,
     async execute(client, channel, user, args) {
-        const remainingCooldown = checkCooldown(user, this.name, this.cooldown * 1000);
-        var color = args[0];
+      const remainingCooldown = checkCooldown(user, this.name, this.cooldown * 1000);
+      if (remainingCooldown !== null) {
+          return;
+      }        var color = args[0];
         let defaultcolors = [
           "Blue",
           "Blue_Violet",
@@ -93,5 +94,11 @@ module.exports = {
           channel,
           `Color changed to ${color} (${colorName.name.value}) ████`
         );
+
+        fs.writeFileSync("/home/ubuntu/BOT/color.txt", `${color}`, (err) => {
+          if (err) {
+            console.error(err);
+          }
+        });
     }
 }
