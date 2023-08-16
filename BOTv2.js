@@ -166,25 +166,22 @@ client.on('message', async (channel, userstate, message, self) => {
         reminderMessage += ` ${index + 1}. From: ${reminder.sender} - ${reminder.message} (${humanizeDuration(new Date().getTime() - Date.parse(reminder.time), { round: true })} ago) `;
       });
   
-      const maxMessageLength = 450; // Maximum allowed length of a single message
+      const maxMessageLength = 450; 
       const messageChunks = [];
   
-      // Split the reminderMessage into chunks that fit within the maximum message length
       while (reminderMessage.length > maxMessageLength) {
         messageChunks.push(reminderMessage.slice(0, maxMessageLength));
         reminderMessage = reminderMessage.slice(maxMessageLength);
       }
       messageChunks.push(reminderMessage);
   
-      // Send each message with the appropriate delay
-      const delayTime = 1500; // 1.5 seconds in milliseconds
+      const delayTime = 1500; 
       messageChunks.forEach((chunk, index) => {
         setTimeout(() => {
           client.action(channel, chunk);
         }, index === 0 ? 0 : delayTime * index);
       });
   
-      // Clear all reminders for the user after sending them
       client.remind.delete(userstate['username'].toLowerCase());
   
       fs.writeFile('/home/ubuntu/BOT/reminderslist.json', JSON.stringify(Array.from(client.remind)), (err) => {
@@ -380,7 +377,6 @@ client.on('message', async (channel, userstate, message, self) => {
     
     if (commands.has(commandName)) {
       try {
-          // Execute the normal command
           command.execute(client, channel, userstate, args, message);
       } catch (error) {
           console.error(error);
@@ -427,7 +423,7 @@ client.on('message', async (channel, userstate, message, self) => {
       const channelCommandsEntry = commandsArray.find(entry => entry[0] === global.uid);
       
       if (channelCommandsEntry) {
-        const customCommands = channelCommandsEntry[1]; // Get the array of custom commands
+        const customCommands = channelCommandsEntry[1];
       
         const commandToExecute = customCommands.find(customcommand => customcommand.commandName === commandName);
         
