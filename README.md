@@ -53,3 +53,14 @@
  | part |  | Part the bot from your channel | Developer
  | remind |  | Send a reminder to someone in chat | User
  | customcommands |  | List of custom commands made with cmd command | User
+ | randomquote |  | A random quote | User
+ | query |  | Search something with wolfram alpha query | User
+ | inflation |  | Shows you the current inflation in selected country | User
+ | fact |  | A random fact | User
+ | emoteprefix |  | Shows you an emote prefix of a selected user | User
+ | eggroll |  | Farming command | User
+ | currency |  | Currency conversion | User
+ | dadjoke |  | Random dad joke | User
+ | bored |  | A random activity | User
+ | banner |  | Link for a twitch banner of selected user | User
+ | leaderboard |  | Leaderboard of eggroll farmers | User
