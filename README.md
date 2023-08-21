@@ -46,3 +46,10 @@
  | bruh |  | Bruh | user
  | song |  | Currenly playing song on FELYP8's spotify | Developer
  | weather |  | Weather in exact country | User
+ | cmd |  | Add a custom command (cmd add/del) | <img src="https://static-cdn.jtvnw.net/badges/v1/5527c58c-fb7d-422d-b71b-f309dcb85cc1/1" width="25" height="25" /> <img src="https://static-cdn.jtvnw.net/badges/v1/3267646d-33f0-4b17-b3df-f923a41db1d0/1" width="25" height="25" />
+ | afk |  | Counts time when you are afk | User
+ | gn |  | Counts time when you are sleeping | User
+ | join |  | Join the bot to your channel | Developer
+ | part |  | Part the bot from your channel | Developer
+ | remind |  | Send a reminder to someone in chat | User
+ | customcommands |  | List of custom commands made with cmd command | User
